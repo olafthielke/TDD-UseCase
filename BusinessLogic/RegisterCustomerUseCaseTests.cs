@@ -10,4 +10,10 @@ namespace BusinessLogic
             var useCase = new RegisterCustomerUseCase();
         }
     }
+
+
+    public class RegisterCustomerUseCase
+    {
+
+    }
 }
