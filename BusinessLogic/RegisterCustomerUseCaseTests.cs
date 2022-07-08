@@ -21,6 +21,9 @@ namespace BusinessLogic
 
     public class RegisterCustomerUseCase
     {
+        public void Register()
+        {
 
+        }
     }
 }
