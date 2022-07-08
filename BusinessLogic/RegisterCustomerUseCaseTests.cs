@@ -14,6 +14,14 @@ namespace BusinessLogic
             register.Should().ThrowExactly<MissingCustomer>()
                              .WithMessage("Missing customer.");
         }
+
+        [Fact]
+        public void Given_No_FirstName_When_Call_Register_Then_Throw_MissingFirstName_Exception()
+        {
+            var useCase = new RegisterCustomerUseCase();
+            Action register = () => useCase.Register(new Customer(null));
+            register.Should().ThrowExactly<MissingFirstName>();
+        }
     }
 
 
