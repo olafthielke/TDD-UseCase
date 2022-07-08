@@ -20,7 +20,7 @@ namespace BusinessLogic
     {
         public void Register(object customer)
         {
-
+            throw new MissingCustomer();
         }
     }
 
