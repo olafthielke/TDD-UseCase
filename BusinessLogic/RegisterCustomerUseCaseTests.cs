@@ -33,11 +33,23 @@ namespace BusinessLogic
         }
     }
 
+    public class Customer
+    {
+        public Customer(string firstName)
+        {
+
+        }
+    }
 
     public class MissingCustomer : Exception
     {
         public MissingCustomer() 
             : base("Missing customer.") 
         { }
+    }
+
+    public class MissingFirstName : Exception
+    {
+
     }
 }
