@@ -15,11 +15,16 @@ namespace BusinessLogic
                              .WithMessage("Missing customer.");
         }
 
-        [Fact]
-        public void Given_No_FirstName_When_Call_Register_Then_Throw_MissingFirstName_Exception()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("  ")]
+        [InlineData("  \t\n ")]
+        public void Given_No_FirstName_When_Call_Register_Then_Throw_MissingFirstName_Exception(string firstName)
         {
             var useCase = new RegisterCustomerUseCase();
-            Action register = () => useCase.Register(new Customer(null));
+            Action register = () => useCase.Register(new Customer(firstName));
             register.Should().ThrowExactly<MissingFirstName>()
                 .WithMessage("Missing first name.");
         }
