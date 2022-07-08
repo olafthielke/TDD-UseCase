@@ -41,18 +41,24 @@ namespace BusinessLogic
 
     public class RegisterCustomerUseCase
     {
-        public void Register(object customer)
+        public void Register(Customer customer)
         {
             if (customer == null)
                 throw new MissingCustomer();
-            throw new MissingFirstName();
+            if (string.IsNullOrWhiteSpace(customer.FirstName))
+                throw new MissingFirstName();
+            throw new MissingLastName();
         }
     }
 
     public class Customer
     {
+        public string FirstName { get; }
+
         public Customer(string firstName, string lastName)
-        { }
+        {
+            FirstName = firstName;
+        }
     }
 
     public class MissingCustomer : Exception
