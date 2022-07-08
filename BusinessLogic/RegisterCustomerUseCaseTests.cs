@@ -29,7 +29,9 @@ namespace BusinessLogic
     {
         public void Register(object customer)
         {
-            throw new MissingCustomer();
+            if (customer == null)
+                throw new MissingCustomer();
+            throw new MissingFirstName();
         }
     }
 
