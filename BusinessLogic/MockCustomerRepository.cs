@@ -5,10 +5,20 @@
         public bool WasGetCustomerCalled;
         public string PassedInEmailAddress;
 
-        public void GetCustomer(string emailAddress)
+        public Customer CustomerToBeReturned;
+
+        public MockCustomerRepository(Customer customerToBeReturned)
+        {
+            CustomerToBeReturned = customerToBeReturned;
+        }
+
+
+        public Customer GetCustomer(string emailAddress)
         {
             WasGetCustomerCalled = true;
             PassedInEmailAddress = emailAddress;
+
+            return CustomerToBeReturned;
         }
     }
 }

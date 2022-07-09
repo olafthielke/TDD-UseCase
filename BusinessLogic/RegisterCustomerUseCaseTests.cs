@@ -81,9 +81,9 @@ namespace BusinessLogic
         }
 
 
-        private static RegisterCustomerUseCase SetupUseCase()
+        private static RegisterCustomerUseCase SetupUseCase(Customer customerToBeReturned = null)
         {
-            var mockCustomerRepo = new MockCustomerRepository();
+            var mockCustomerRepo = new MockCustomerRepository(customerToBeReturned);
             return new RegisterCustomerUseCase(mockCustomerRepo);
         }
 
