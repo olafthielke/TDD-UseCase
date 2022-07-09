@@ -58,12 +58,14 @@ namespace BusinessLogic
                 .WithMessage("Missing email address.");
         }
 
-        [Fact]
-        public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress()
+        [Theory]
+        [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
+        public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress(string firstName, 
+            string lastName, string emailAddress)
         {
             var mockCustomerRepo = new MockCustomerRepository();
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo);
-            var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
+            var customer = new Customer(firstName, lastName, emailAddress);
             useCase.Register(customer);
             VerifyRepoCallToGetCustomer(mockCustomerRepo);
         }
