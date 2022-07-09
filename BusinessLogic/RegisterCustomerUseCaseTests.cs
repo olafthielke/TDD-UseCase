@@ -34,7 +34,8 @@ namespace BusinessLogic
         {
             var useCase = new RegisterCustomerUseCase();
             Action register = () => useCase.Register(new Customer("Fred", null));
-            register.Should().ThrowExactly<MissingLastName>();
+            register.Should().ThrowExactly<MissingLastName>()
+                .WithMessage("Missing last name.");
         }
     }
 
