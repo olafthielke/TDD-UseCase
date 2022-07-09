@@ -61,17 +61,21 @@ namespace BusinessLogic
                 throw new MissingCustomer();
             if (string.IsNullOrWhiteSpace(customer.FirstName))
                 throw new MissingFirstName();
-            throw new MissingLastName();
+            if (string.IsNullOrWhiteSpace(customer.LastName))
+                throw new MissingLastName();
+            throw new MissingEmailAddress();
         }
     }
 
     public class Customer
     {
         public string FirstName { get; }
+        public string LastName { get; }
 
         public Customer(string firstName, string lastName, string emailAddress)
         {
             FirstName = firstName;
+            LastName = lastName;
         }
     }
 
