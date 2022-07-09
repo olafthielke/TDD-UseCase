@@ -71,6 +71,15 @@ namespace BusinessLogic
             VerifyRepoCallToGetCustomer(emailAddress, useCase);
         }
 
+        [Fact]
+        public void Given_Customer_Already_Exists_When_Call_Register_Then_Throw_DuplicateCustomerEmailAddress_Exception()
+        {
+            var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
+            var useCase = SetupUseCase(customer);
+            Action register = () => useCase.Register(customer);
+            register.Should().ThrowExactly<DuplicateCustomerEmailAddress>();
+        }
+
 
         private static RegisterCustomerUseCase SetupUseCase()
         {
