@@ -29,11 +29,17 @@ namespace BusinessLogic
                 .WithMessage("Missing first name.");
         }
 
-        [Fact]
-        public void Given_No_LastName_When_Call_Register_Then_Throw_MissingLastName_Exception()
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("   ")]
+        [InlineData(" \r\n  ")]
+        public void Given_No_LastName_When_Call_Register_Then_Throw_MissingLastName_Exception(string lastName)
         {
             var useCase = new RegisterCustomerUseCase();
-            Action register = () => useCase.Register(new Customer("Fred", null));
+            Action register = () => useCase.Register(new Customer("Fred", lastName));
             register.Should().ThrowExactly<MissingLastName>()
                 .WithMessage("Missing last name.");
         }
