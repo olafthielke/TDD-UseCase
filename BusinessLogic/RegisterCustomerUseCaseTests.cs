@@ -1,6 +1,7 @@
 ﻿using System;
 using Xunit;
 using FluentAssertions;
+using BusinessLogic.Exceptions;
 
 namespace BusinessLogic
 {
@@ -56,60 +57,5 @@ namespace BusinessLogic
             register.Should().ThrowExactly<MissingEmailAddress>()
                 .WithMessage("Missing email address.");
         }
-    }
-
-
-    public class RegisterCustomerUseCase
-    {
-        public void Register(Customer customer)
-        {
-            if (customer == null)
-                throw new MissingCustomer();
-            if (string.IsNullOrWhiteSpace(customer.FirstName))
-                throw new MissingFirstName();
-            if (string.IsNullOrWhiteSpace(customer.LastName))
-                throw new MissingLastName();
-            throw new MissingEmailAddress();
-        }
-    }
-
-    public class Customer
-    {
-        public string FirstName { get; }
-        public string LastName { get; }
-
-        public Customer(string firstName, string lastName, string emailAddress)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-        }
-    }
-
-    public class MissingCustomer : Exception
-    {
-        public MissingCustomer() 
-            : base("Missing customer.") 
-        { }
-    }
-
-    public class MissingFirstName : Exception
-    {
-        public MissingFirstName() 
-            : base("Missing first name.")
-        { }
-    }
-
-    public class MissingLastName : Exception
-    {
-        public MissingLastName() 
-            : base("Missing last name.") 
-        { }
-    }
-
-    public class MissingEmailAddress : Exception
-    {
-        public MissingEmailAddress() 
-            : base("Missing email address.")
-        { }
     }
 }
