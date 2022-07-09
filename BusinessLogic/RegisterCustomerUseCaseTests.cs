@@ -78,6 +78,8 @@ namespace BusinessLogic
 
     public class MissingLastName : Exception
     {
-
+        public MissingLastName() 
+            : base("Missing last name.") 
+        { }
     }
 }
