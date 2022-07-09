@@ -4,6 +4,14 @@ namespace BusinessLogic
 {
     public class RegisterCustomerUseCase
     {
+        public ICustomerRepository Repository { get; }
+
+        public RegisterCustomerUseCase(ICustomerRepository repository)
+        {
+            Repository = repository;
+        }
+
+
         public void Register(Customer customer)
         {
             if (customer == null)
