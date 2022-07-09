@@ -103,6 +103,8 @@ namespace BusinessLogic
 
     public class MissingEmailAddress : Exception
     {
-
+        public MissingEmailAddress() 
+            : base("Missing email address.")
+        { }
     }
 }
