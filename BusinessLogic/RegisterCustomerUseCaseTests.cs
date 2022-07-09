@@ -43,11 +43,16 @@ namespace BusinessLogic
                 .WithMessage("Missing last name.");
         }
 
-        [Fact]
-        public void Given_No_EmailAddress_When_Call_Register_Then_Throw_MissingEmailAddress_Exception()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("   ")]
+        [InlineData(" \r\n  ")]
+        public void Given_No_EmailAddress_When_Call_Register_Then_Throw_MissingEmailAddress_Exception(string emailAddress)
         {
             var useCase = new RegisterCustomerUseCase();
-            Action register = () => useCase.Register(new Customer("Fred", "Flintstone", null));
+            Action register = () => useCase.Register(new Customer("Fred", "Flintstone", emailAddress));
             register.Should().ThrowExactly<MissingEmailAddress>()
                 .WithMessage("Missing email address.");
         }
