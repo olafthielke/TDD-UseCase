@@ -66,6 +66,7 @@ namespace BusinessLogic
             var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
             useCase.Register(customer);
             mockCustomerRepo.WasGetCustomerCalled.Should().BeTrue();
+            mockCustomerRepo.PassedInEmailAddress.Should().Be("fred@flintstones.net");
         }
     }
 }
