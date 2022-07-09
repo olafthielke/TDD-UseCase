@@ -14,6 +14,13 @@ namespace BusinessLogic
 
         public void Register(Customer customer)
         {
+            Validate(customer);
+
+            Repository.GetCustomer("fred@flintstones.net");
+        }
+
+        private static void Validate(Customer customer)
+        {
             if (customer == null)
                 throw new MissingCustomer();
             if (string.IsNullOrWhiteSpace(customer.FirstName))
@@ -22,8 +29,6 @@ namespace BusinessLogic
                 throw new MissingLastName();
             if (string.IsNullOrWhiteSpace(customer.EmailAddress))
                 throw new MissingEmailAddress();
-
-            Repository.GetCustomer("fred@flintstones.net");
         }
     }
 }

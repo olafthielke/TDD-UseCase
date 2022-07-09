@@ -65,6 +65,11 @@ namespace BusinessLogic
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo);
             var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
             useCase.Register(customer);
+            VerifyRepoCallToGetCustomer(mockCustomerRepo);
+        }
+
+        private static void VerifyRepoCallToGetCustomer(MockCustomerRepository mockCustomerRepo)
+        {
             mockCustomerRepo.WasGetCustomerCalled.Should().BeTrue();
             mockCustomerRepo.PassedInEmailAddress.Should().Be("fred@flintstones.net");
         }
