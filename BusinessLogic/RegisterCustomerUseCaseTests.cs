@@ -10,7 +10,7 @@ namespace BusinessLogic
         [Fact]
         public void Given_No_Customer_When_Call_Register_Then_Throw_MissingCustomer_Exception()
         {
-            var useCase = new RegisterCustomerUseCase(null);
+            var useCase = SetupUseCase();
             Action register = () => useCase.Register(null);
             register.Should().ThrowExactly<MissingCustomer>()
                              .WithMessage("Missing customer.");
@@ -24,7 +24,7 @@ namespace BusinessLogic
         [InlineData("  \t\n ")]
         public void Given_No_FirstName_When_Call_Register_Then_Throw_MissingFirstName_Exception(string firstName)
         {
-            var useCase = new RegisterCustomerUseCase(null);
+            var useCase = SetupUseCase();
             Action register = () => useCase.Register(new Customer(firstName, "Flintstone", "fred@flintstones.net"));
             register.Should().ThrowExactly<MissingFirstName>()
                 .WithMessage("Missing first name.");
@@ -38,7 +38,7 @@ namespace BusinessLogic
         [InlineData(" \r\n  ")]
         public void Given_No_LastName_When_Call_Register_Then_Throw_MissingLastName_Exception(string lastName)
         {
-            var useCase = new RegisterCustomerUseCase(null);
+            var useCase = SetupUseCase();
             Action register = () => useCase.Register(new Customer("Fred", lastName, "fred@flintstones.net"));
             register.Should().ThrowExactly<MissingLastName>()
                 .WithMessage("Missing last name.");
@@ -52,7 +52,7 @@ namespace BusinessLogic
         [InlineData(" \r\n  ")]
         public void Given_No_EmailAddress_When_Call_Register_Then_Throw_MissingEmailAddress_Exception(string emailAddress)
         {
-            var useCase = new RegisterCustomerUseCase(null);
+            var useCase = SetupUseCase();
             Action register = () => useCase.Register(new Customer("Fred", "Flintstone", emailAddress));
             register.Should().ThrowExactly<MissingEmailAddress>()
                 .WithMessage("Missing email address.");
@@ -65,16 +65,24 @@ namespace BusinessLogic
         public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress(string firstName, 
             string lastName, string emailAddress)
         {
-            var mockCustomerRepo = new MockCustomerRepository();
-            var useCase = new RegisterCustomerUseCase(mockCustomerRepo);
+            var useCase = SetupUseCase();
             var customer = new Customer(firstName, lastName, emailAddress);
             useCase.Register(customer);
-            VerifyRepoCallToGetCustomer(emailAddress, mockCustomerRepo);
+            VerifyRepoCallToGetCustomer(emailAddress, useCase);
         }
 
 
-        private static void VerifyRepoCallToGetCustomer(string emailAddress, MockCustomerRepository mockCustomerRepo)
+        private static RegisterCustomerUseCase SetupUseCase()
         {
+            var mockCustomerRepo = new MockCustomerRepository();
+            return new RegisterCustomerUseCase(mockCustomerRepo);
+        }
+
+
+        private static void VerifyRepoCallToGetCustomer(string emailAddress, RegisterCustomerUseCase useCase)
+        {
+            var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
+            
             mockCustomerRepo.WasGetCustomerCalled.Should().BeTrue();
             mockCustomerRepo.PassedInEmailAddress.Should().Be(emailAddress);
         }
