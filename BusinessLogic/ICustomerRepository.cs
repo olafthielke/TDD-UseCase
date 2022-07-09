@@ -2,6 +2,6 @@
 {
     public interface ICustomerRepository
     {
-        void GetCustomer();
+        void GetCustomer(string emailAddress);
     }
 }

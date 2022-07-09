@@ -23,7 +23,7 @@ namespace BusinessLogic
             if (string.IsNullOrWhiteSpace(customer.EmailAddress))
                 throw new MissingEmailAddress();
 
-            Repository.GetCustomer();
+            Repository.GetCustomer("");
         }
     }
 }
