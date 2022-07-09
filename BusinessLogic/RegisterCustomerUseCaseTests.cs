@@ -60,6 +60,7 @@ namespace BusinessLogic
 
         [Theory]
         [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
+        [InlineData("Barney", "Rubble", "barney@rubbles.rock")]
         public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress(string firstName, 
             string lastName, string emailAddress)
         {
@@ -67,13 +68,13 @@ namespace BusinessLogic
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo);
             var customer = new Customer(firstName, lastName, emailAddress);
             useCase.Register(customer);
-            VerifyRepoCallToGetCustomer(mockCustomerRepo);
+            VerifyRepoCallToGetCustomer(emailAddress, mockCustomerRepo);
         }
 
-        private static void VerifyRepoCallToGetCustomer(MockCustomerRepository mockCustomerRepo)
+        private static void VerifyRepoCallToGetCustomer(string emailAddress, MockCustomerRepository mockCustomerRepo)
         {
             mockCustomerRepo.WasGetCustomerCalled.Should().BeTrue();
-            mockCustomerRepo.PassedInEmailAddress.Should().Be("fred@flintstones.net");
+            mockCustomerRepo.PassedInEmailAddress.Should().Be(emailAddress);
         }
     }
 }
