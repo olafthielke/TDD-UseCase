@@ -48,7 +48,8 @@ namespace BusinessLogic
         {
             var useCase = new RegisterCustomerUseCase();
             Action register = () => useCase.Register(new Customer("Fred", "Flintstone", null));
-            register.Should().ThrowExactly<MissingEmailAddress>();
+            register.Should().ThrowExactly<MissingEmailAddress>()
+                .WithMessage("Missing email address.");
         }
     }
 
