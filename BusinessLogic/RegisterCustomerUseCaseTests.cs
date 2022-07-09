@@ -57,5 +57,15 @@ namespace BusinessLogic
             register.Should().ThrowExactly<MissingEmailAddress>()
                 .WithMessage("Missing email address.");
         }
+
+        [Fact]
+        public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress()
+        {
+            var mockCustomerRepo = new MockCustomerRepository();
+            var useCase = new RegisterCustomerUseCase(mockCustomerRepo);
+            var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
+            useCase.Register(customer);
+            mockCustomerRepo.WasGetCustomerCalled.Should().BeTrue();
+        }
     }
 }
