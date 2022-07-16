@@ -77,7 +77,8 @@ namespace BusinessLogic
             var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
             var useCase = SetupUseCase(customer);
             Action register = () => useCase.Register(customer);
-            register.Should().ThrowExactly<DuplicateCustomerEmailAddress>();
+            register.Should().ThrowExactly<DuplicateCustomerEmailAddress>()
+                .WithMessage("Customer with email address 'fred@flintstones.net' already exists.");
         }
 
 
