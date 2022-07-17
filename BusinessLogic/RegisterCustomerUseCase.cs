@@ -19,6 +19,8 @@ namespace BusinessLogic
             var existCust = Repository.GetCustomer(customer.EmailAddress);
             if (existCust != null)
                 throw new DuplicateCustomerEmailAddress(customer.EmailAddress);
+
+            Repository.SaveCustomer();
         }
 
         private static void Validate(Customer customer)

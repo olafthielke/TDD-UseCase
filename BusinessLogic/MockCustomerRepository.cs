@@ -21,5 +21,10 @@
 
             return CustomerToBeReturned;
         }
+
+        public void SaveCustomer()
+        {
+            WasSaveCustomerCalled = true;
+        }
     }
 }
