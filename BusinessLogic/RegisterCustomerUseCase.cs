@@ -1,4 +1,5 @@
-﻿using BusinessLogic.Exceptions;
+﻿using System;
+using BusinessLogic.Exceptions;
 
 namespace BusinessLogic
 {
@@ -17,8 +18,7 @@ namespace BusinessLogic
             Validate(registration);
             var customer = registration.ToCustomer();
             Repository.SaveCustomer(customer);
-
-            return null;
+            return customer;
         }
 
         private void Validate(CustomerRegistration registration)
