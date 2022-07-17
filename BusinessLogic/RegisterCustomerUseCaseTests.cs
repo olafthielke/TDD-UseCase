@@ -87,6 +87,7 @@ namespace BusinessLogic
 
         [Theory]
         [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
+        [InlineData("Barney", "Rubble", "barney@rubbles.rock")]
         public void Given_New_Customer_When_Call_Register_Then_Save_Customer_To_Repository(string firstName,
             string lastName, string emailAddress)
         {
