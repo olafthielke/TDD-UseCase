@@ -85,6 +85,17 @@ namespace BusinessLogic
                 .WithMessage($"Customer with email address '{emailAddress}' already exists.");
         }
 
+        [Fact]
+        public void Given_New_Customer_When_Call_Register_Then_Save_Customer_To_Repository()
+        {
+            var useCase = SetupUseCase();
+            var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
+            useCase.Register(customer);
+
+            var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
+            mockCustomerRepo.WasSaveCustomerCalled.Should().BeTrue();
+        }
+
 
         private static RegisterCustomerUseCase SetupUseCase(Customer customerToBeReturned = null)
         {
