@@ -5,6 +5,7 @@
         public bool WasGetCustomerCalled;
         public bool WasSaveCustomerCalled;
         public string PassedInEmailAddress;
+        public Customer PassedInCustomer;
 
         public Customer CustomerToBeReturned;
 
