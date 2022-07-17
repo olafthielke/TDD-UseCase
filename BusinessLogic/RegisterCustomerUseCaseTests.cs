@@ -101,15 +101,17 @@ namespace BusinessLogic
             VerifyRepoCallToSaveCustomer(registration, useCase);
         }
 
-        [Fact]
-        public void Given_New_Customer_When_Call_Register_Then_Return_New_Customer()
+        [Theory]
+        [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
+        [InlineData("Barney", "Rubble", "barney@rubbles.rock")]
+        [InlineData("Wilma", "Flintstone", "wilma@flintstones.net")]
+        public void Given_New_Customer_When_Call_Register_Then_Return_New_Customer(string firstName,
+            string lastName, string emailAddress)
         {
             var useCase = SetupUseCase();
-            var registration = new CustomerRegistration("Fred", "Flintstone", "fred@flintstones.net");
+            var registration = new CustomerRegistration(firstName, lastName, emailAddress);
             var customer = useCase.Register(registration);
-
-            var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
-            customer.Should().BeEquivalentTo(mockCustomerRepo.PassedInCustomer);
+            VerifyCustomer(customer, useCase);
         }
 
 
@@ -142,6 +144,12 @@ namespace BusinessLogic
             mockCustomerRepo.PassedInCustomer.FirstName.Should().Be(registration.FirstName);
             mockCustomerRepo.PassedInCustomer.LastName.Should().Be(registration.LastName);
             mockCustomerRepo.PassedInCustomer.EmailAddress.Should().Be(registration.EmailAddress);
+        }
+
+        private static void VerifyCustomer(Customer customer, RegisterCustomerUseCase useCase)
+        {
+            var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
+            customer.Should().BeEquivalentTo(mockCustomerRepo.PassedInCustomer);
         }
     }
 }
