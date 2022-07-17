@@ -85,16 +85,15 @@ namespace BusinessLogic
                 .WithMessage($"Customer with email address '{emailAddress}' already exists.");
         }
 
-        [Fact]
-        public void Given_New_Customer_When_Call_Register_Then_Save_Customer_To_Repository()
+        [Theory]
+        [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
+        public void Given_New_Customer_When_Call_Register_Then_Save_Customer_To_Repository(string firstName,
+            string lastName, string emailAddress)
         {
             var useCase = SetupUseCase();
-            var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
+            var customer = new Customer(firstName, lastName, emailAddress);
             useCase.Register(customer);
-
-            var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
-            mockCustomerRepo.WasSaveCustomerCalled.Should().BeTrue();
-            mockCustomerRepo.PassedInCustomer.Should().BeEquivalentTo(customer);
+            VerifyRepoCallToSaveCustomer(customer, useCase);
         }
 
 
@@ -111,6 +110,14 @@ namespace BusinessLogic
             
             mockCustomerRepo.WasGetCustomerCalled.Should().BeTrue();
             mockCustomerRepo.PassedInEmailAddress.Should().Be(emailAddress);
+        }
+
+        private static void VerifyRepoCallToSaveCustomer(Customer customer, RegisterCustomerUseCase useCase)
+        {
+            var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
+
+            mockCustomerRepo.WasSaveCustomerCalled.Should().BeTrue();
+            mockCustomerRepo.PassedInCustomer.Should().BeEquivalentTo(customer);
         }
     }
 }
