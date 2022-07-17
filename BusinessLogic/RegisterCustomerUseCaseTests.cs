@@ -94,6 +94,7 @@ namespace BusinessLogic
 
             var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
             mockCustomerRepo.WasSaveCustomerCalled.Should().BeTrue();
+            mockCustomerRepo.PassedInCustomer.Should().BeEquivalentTo(customer);
         }
 
 
