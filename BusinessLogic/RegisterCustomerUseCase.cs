@@ -12,21 +12,23 @@ namespace BusinessLogic
         }
 
 
-        public void Register(Customer customer)
+        public void Register(CustomerRegistration registration)
         {
-            Validate(customer);
+            Validate(registration);
 
-            Repository.SaveCustomer(customer);
+            // Somewhere here we are converting the registration to a customer (with customer id)
+
+            //Repository.SaveCustomer(customer);
         }
 
-        private void Validate(Customer customer)
+        private void Validate(CustomerRegistration registration)
         {
-            if (customer == null)
-                throw new MissingCustomer();
-            customer.Validate();
-            var existCust = Repository.GetCustomer(customer.EmailAddress);
+            if (registration == null)
+                throw new MissingCustomerRegistration();
+            registration.Validate();
+            var existCust = Repository.GetCustomer(registration.EmailAddress);
             if (existCust != null)
-                throw new DuplicateCustomerEmailAddress(customer.EmailAddress);
+                throw new DuplicateCustomerEmailAddress(registration.EmailAddress);
         }
     }
 }

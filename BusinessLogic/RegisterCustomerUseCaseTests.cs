@@ -8,12 +8,12 @@ namespace BusinessLogic
     public class RegisterCustomerUseCaseTests
     {
         [Fact]
-        public void Given_No_Customer_When_Call_Register_Then_Throw_MissingCustomer_Exception()
+        public void Given_No_CustomerRegistration_When_Call_Register_Then_Throw_MissingCustomerRegistration_Exception()
         {
             var useCase = SetupUseCase();
             Action register = () => useCase.Register(null);
-            register.Should().ThrowExactly<MissingCustomer>()
-                             .WithMessage("Missing customer.");
+            register.Should().ThrowExactly<MissingCustomerRegistration>()
+                             .WithMessage("Missing customer registration.");
         }
 
         [Theory]
@@ -25,7 +25,8 @@ namespace BusinessLogic
         public void Given_No_FirstName_When_Call_Register_Then_Throw_MissingFirstName_Exception(string firstName)
         {
             var useCase = SetupUseCase();
-            Action register = () => useCase.Register(new Customer(firstName, "Flintstone", "fred@flintstones.net"));
+            var registration = new CustomerRegistration(firstName, "Flintstone", "fred@flintstones.net");
+            Action register = () => useCase.Register(registration);
             register.Should().ThrowExactly<MissingFirstName>()
                 .WithMessage("Missing first name.");
         }
@@ -39,7 +40,8 @@ namespace BusinessLogic
         public void Given_No_LastName_When_Call_Register_Then_Throw_MissingLastName_Exception(string lastName)
         {
             var useCase = SetupUseCase();
-            Action register = () => useCase.Register(new Customer("Fred", lastName, "fred@flintstones.net"));
+            var registration = new CustomerRegistration("Fred", lastName, "fred@flintstones.net");
+            Action register = () => useCase.Register(registration);
             register.Should().ThrowExactly<MissingLastName>()
                 .WithMessage("Missing last name.");
         }
@@ -53,7 +55,8 @@ namespace BusinessLogic
         public void Given_No_EmailAddress_When_Call_Register_Then_Throw_MissingEmailAddress_Exception(string emailAddress)
         {
             var useCase = SetupUseCase();
-            Action register = () => useCase.Register(new Customer("Fred", "Flintstone", emailAddress));
+            var registration = new CustomerRegistration("Fred", "Flintstone", emailAddress);
+            Action register = () => useCase.Register(registration);
             register.Should().ThrowExactly<MissingEmailAddress>()
                 .WithMessage("Missing email address.");
         }
@@ -62,12 +65,12 @@ namespace BusinessLogic
         [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
         [InlineData("Barney", "Rubble", "barney@rubbles.rock")]
         [InlineData("Wilma", "Flintstone", "wilma@flintstones.net")]
-        public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress(string firstName, 
+        public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress(string firstName,
             string lastName, string emailAddress)
         {
             var useCase = SetupUseCase();
-            var customer = new Customer(firstName, lastName, emailAddress);
-            useCase.Register(customer);
+            var registration = new CustomerRegistration(firstName, lastName, emailAddress);
+            useCase.Register(registration);
             VerifyRepoCallToGetCustomer(emailAddress, useCase);
         }
 
@@ -78,9 +81,9 @@ namespace BusinessLogic
         public void Given_Customer_Already_Exists_When_Call_Register_Then_Throw_DuplicateCustomerEmailAddress_Exception(string firstName,
             string lastName, string emailAddress)
         {
-            var customer = new Customer(firstName, lastName, emailAddress);
-            var useCase = SetupUseCase(customer);
-            Action register = () => useCase.Register(customer);
+            var useCase = SetupUseCase(new Customer(Guid.NewGuid(), firstName, lastName, emailAddress));
+            var registration = new CustomerRegistration(firstName, lastName, emailAddress);
+            Action register = () => useCase.Register(registration);
             register.Should().ThrowExactly<DuplicateCustomerEmailAddress>()
                 .WithMessage($"Customer with email address '{emailAddress}' already exists.");
         }
@@ -93,9 +96,9 @@ namespace BusinessLogic
             string lastName, string emailAddress)
         {
             var useCase = SetupUseCase();
-            var customer = new Customer(firstName, lastName, emailAddress);
-            useCase.Register(customer);
-            VerifyRepoCallToSaveCustomer(customer, useCase);
+            var registration = new CustomerRegistration(firstName, lastName, emailAddress);
+            useCase.Register(registration);
+            VerifyRepoCallToSaveCustomer(registration, useCase);
         }
 
 
@@ -114,18 +117,17 @@ namespace BusinessLogic
             mockCustomerRepo.PassedInEmailAddress.Should().Be(emailAddress);
         }
 
-        private static void VerifyRepoCallToSaveCustomer(CustomerRegistration reg, 
-            Customer customer, RegisterCustomerUseCase useCase)
+        private static void VerifyRepoCallToSaveCustomer(CustomerRegistration registration,
+            RegisterCustomerUseCase useCase)
         {
             var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
 
             mockCustomerRepo.WasSaveCustomerCalled.Should().BeTrue();
 
-            // Wrong design. Split CustomerRegistration from Customer.
             mockCustomerRepo.PassedInCustomer.Id.Should().NotBeEmpty();
-            mockCustomerRepo.PassedInCustomer.FirstName.Should().Be(reg.FirstName);
-            mockCustomerRepo.PassedInCustomer.LastName.Should().Be(reg.LastName);
-            mockCustomerRepo.PassedInCustomer.EmailAddress.Should().Be(reg.EmailAddress);
+            mockCustomerRepo.PassedInCustomer.FirstName.Should().Be(registration.FirstName);
+            mockCustomerRepo.PassedInCustomer.LastName.Should().Be(registration.LastName);
+            mockCustomerRepo.PassedInCustomer.EmailAddress.Should().Be(registration.EmailAddress);
         }
     }
 }
