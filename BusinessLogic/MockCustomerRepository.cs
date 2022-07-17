@@ -23,9 +23,10 @@
             return CustomerToBeReturned;
         }
 
-        public void SaveCustomer()
+        public void SaveCustomer(Customer customer)
         {
             WasSaveCustomerCalled = true;
+            PassedInCustomer = customer;
         }
     }
 }
