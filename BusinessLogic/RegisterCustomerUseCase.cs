@@ -12,11 +12,13 @@ namespace BusinessLogic
         }
 
 
-        public void Register(CustomerRegistration registration)
+        public Customer Register(CustomerRegistration registration)
         {
             Validate(registration);
             var customer = registration.ToCustomer();
             Repository.SaveCustomer(customer);
+
+            return null;
         }
 
         private void Validate(CustomerRegistration registration)
