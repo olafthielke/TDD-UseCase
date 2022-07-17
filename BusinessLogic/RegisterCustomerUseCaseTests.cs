@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using BusinessLogic.Exceptions;
@@ -8,12 +9,12 @@ namespace BusinessLogic
     public class RegisterCustomerUseCaseTests
     {
         [Fact]
-        public void Given_No_CustomerRegistration_When_Call_Register_Then_Throw_MissingCustomerRegistration_Exception()
+        public async Task Given_No_CustomerRegistration_When_Call_Register_Then_Throw_MissingCustomerRegistration_Exception()
         {
             var useCase = SetupUseCase();
-            Action register = () => useCase.Register(null);
-            register.Should().ThrowExactly<MissingCustomerRegistration>()
-                             .WithMessage("Missing customer registration.");
+            Func<Task> register = async () => { await useCase.Register(null); };
+            await register.Should().ThrowExactlyAsync<MissingCustomerRegistration>()
+                .WithMessage("Missing customer registration.");
         }
 
         [Theory]
