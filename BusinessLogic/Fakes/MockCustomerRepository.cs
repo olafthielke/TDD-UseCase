@@ -1,4 +1,8 @@
-﻿namespace BusinessLogic
+﻿using BusinessLogic.Entities;
+using BusinessLogic.Interfaces;
+using System.Threading.Tasks;
+
+namespace BusinessLogic.Fakes
 {
     public class MockCustomerRepository : ICustomerRepository
     {
@@ -15,16 +19,20 @@
         }
 
 
-        public Customer GetCustomer(string emailAddress)
+        public async Task<Customer> GetCustomer(string emailAddress)
         {
+            await Task.CompletedTask;
+
             WasGetCustomerCalled = true;
             PassedInEmailAddress = emailAddress;
 
             return CustomerToBeReturned;
         }
 
-        public void SaveCustomer(Customer customer)
+        public async Task SaveCustomer(Customer customer)
         {
+            await Task.CompletedTask;
+
             WasSaveCustomerCalled = true;
             PassedInCustomer = customer;
         }
