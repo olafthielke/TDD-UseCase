@@ -101,6 +101,17 @@ namespace BusinessLogic
             VerifyRepoCallToSaveCustomer(registration, useCase);
         }
 
+        [Fact]
+        public void Given_New_Customer_When_Call_Register_Then_Return_New_Customer()
+        {
+            var useCase = SetupUseCase();
+            var registration = new CustomerRegistration("Fred", "Flintstone", "fred@flintstones.net");
+            var customer = useCase.Register(registration);
+
+            var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
+            customer.Should().BeEquivalentTo(mockCustomerRepo.PassedInCustomer);
+        }
+
 
         private static RegisterCustomerUseCase SetupUseCase(Customer customerToBeReturned = null)
         {
