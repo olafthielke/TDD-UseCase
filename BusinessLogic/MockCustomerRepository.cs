@@ -3,6 +3,7 @@
     public class MockCustomerRepository : ICustomerRepository
     {
         public bool WasGetCustomerCalled;
+        public bool WasSaveCustomerCalled;
         public string PassedInEmailAddress;
 
         public Customer CustomerToBeReturned;
