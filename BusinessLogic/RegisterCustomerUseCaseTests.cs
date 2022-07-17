@@ -114,15 +114,18 @@ namespace BusinessLogic
             mockCustomerRepo.PassedInEmailAddress.Should().Be(emailAddress);
         }
 
-        private static void VerifyRepoCallToSaveCustomer(Customer customer, RegisterCustomerUseCase useCase)
+        private static void VerifyRepoCallToSaveCustomer(CustomerRegistration reg, 
+            Customer customer, RegisterCustomerUseCase useCase)
         {
             var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
 
             mockCustomerRepo.WasSaveCustomerCalled.Should().BeTrue();
-            mockCustomerRepo.PassedInCustomer.Id.Should().HaveValue();
+
+            // Wrong design. Split CustomerRegistration from Customer.
             mockCustomerRepo.PassedInCustomer.Id.Should().NotBeEmpty();
-            mockCustomerRepo.PassedInCustomer.Should().BeEquivalentTo(customer, 
-            options => options.Excluding(c => c.Id));
+            mockCustomerRepo.PassedInCustomer.FirstName.Should().Be(reg.FirstName);
+            mockCustomerRepo.PassedInCustomer.LastName.Should().Be(reg.LastName);
+            mockCustomerRepo.PassedInCustomer.EmailAddress.Should().Be(reg.EmailAddress);
         }
     }
 }
