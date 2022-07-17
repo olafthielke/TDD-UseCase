@@ -121,9 +121,12 @@ namespace BusinessLogic
             RegisterCustomerUseCase useCase)
         {
             var mockCustomerRepo = (MockCustomerRepository)useCase.Repository;
-
             mockCustomerRepo.WasSaveCustomerCalled.Should().BeTrue();
+            VerifyCustomer(registration, mockCustomerRepo);
+        }
 
+        private static void VerifyCustomer(CustomerRegistration registration, MockCustomerRepository mockCustomerRepo)
+        {
             mockCustomerRepo.PassedInCustomer.Id.Should().NotBeEmpty();
             mockCustomerRepo.PassedInCustomer.FirstName.Should().Be(registration.FirstName);
             mockCustomerRepo.PassedInCustomer.LastName.Should().Be(registration.LastName);

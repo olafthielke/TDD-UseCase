@@ -1,5 +1,4 @@
 ﻿using System;
-using BusinessLogic.Exceptions;
 
 namespace BusinessLogic
 {
@@ -16,16 +15,6 @@ namespace BusinessLogic
             FirstName = firstName;
             LastName = lastName;
             EmailAddress = emailAddress;
-        }
-
-        public void Validate()
-        {
-            if (string.IsNullOrWhiteSpace(FirstName))
-                throw new MissingFirstName();
-            if (string.IsNullOrWhiteSpace(LastName))
-                throw new MissingLastName();
-            if (string.IsNullOrWhiteSpace(EmailAddress))
-                throw new MissingEmailAddress();
         }
     }
 }
