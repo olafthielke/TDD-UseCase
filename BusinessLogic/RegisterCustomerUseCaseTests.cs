@@ -2,6 +2,7 @@
 using Xunit;
 using FluentAssertions;
 using BusinessLogic.Exceptions;
+using Moq;
 
 namespace BusinessLogic
 {
@@ -56,6 +57,16 @@ namespace BusinessLogic
             Action register = () => useCase.Register(new Customer("Fred", "Flintstone", emailAddress));
             register.Should().ThrowExactly<MissingEmailAddress>()
                 .WithMessage("Missing email address.");
+        }
+
+        [Fact]
+        public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress()
+        {
+            var mockCustomerRepo = new Mock<ICustomerRepository>();
+            var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
+            var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
+            useCase.Register(customer);
+            mockCustomerRepo.Verify(x => x.GetCustomer());
         }
     }
 }
