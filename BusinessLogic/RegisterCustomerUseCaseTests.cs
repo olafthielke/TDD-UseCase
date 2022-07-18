@@ -73,17 +73,19 @@ namespace BusinessLogic
             mockCustomerRepo.Verify(x => x.GetCustomer(emailAddress));
         }
 
-        [Fact]
-        public void Given_Customer_Already_Exists_When_Call_Register_Then_Throw_DuplicateCustomerEmailAddress_Exception()
+        [Theory]
+        [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
+        public void Given_Customer_Already_Exists_When_Call_Register_Then_Throw_DuplicateCustomerEmailAddress_Exception(string firstName,
+            string lastName, string emailAddress)
         {
-            var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
+            var customer = new Customer(firstName, lastName, emailAddress);
             var mockCustomerRepo = new Mock<ICustomerRepository>();
             mockCustomerRepo.Setup(x => x.GetCustomer(It.IsAny<string>()))
                 .Returns(customer);
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
             Action register = () => useCase.Register(customer);
             register.Should().ThrowExactly<DuplicateCustomerEmailAddress>()
-                .WithMessage("Customer with email address 'fred@flintstones.net' already exists.");
+                .WithMessage($"Customer with email address '{emailAddress}' already exists.");
         }
     }
 }
