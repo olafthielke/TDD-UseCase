@@ -16,7 +16,7 @@ namespace BusinessLogic
         {
             Validate(customer);
 
-            Repository.GetCustomer("fred@flintstones.net");
+            Repository.GetCustomer(customer.EmailAddress);
         }
 
         private static void Validate(Customer customer)
