@@ -82,7 +82,8 @@ namespace BusinessLogic
                 .Returns(customer);
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
             Action register = () => useCase.Register(customer);
-            register.Should().ThrowExactly<DuplicateCustomerEmailAddress>();
+            register.Should().ThrowExactly<DuplicateCustomerEmailAddress>()
+                .WithMessage("Customer with email address 'fred@flintstones.net' already exists.");
         }
     }
 }
