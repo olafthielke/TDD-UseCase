@@ -16,23 +16,17 @@ namespace BusinessLogic
         {
             Validate(customer);
 
-            var existCust = Repository.GetCustomer(customer.EmailAddress);
-            if (existCust != null)
-                throw new DuplicateCustomerEmailAddress(customer.EmailAddress);
-
             Repository.SaveCustomer();
         }
 
-        private static void Validate(Customer customer)
+        private void Validate(Customer customer)
         {
             if (customer == null)
                 throw new MissingCustomer();
-            if (string.IsNullOrWhiteSpace(customer.FirstName))
-                throw new MissingFirstName();
-            if (string.IsNullOrWhiteSpace(customer.LastName))
-                throw new MissingLastName();
-            if (string.IsNullOrWhiteSpace(customer.EmailAddress))
-                throw new MissingEmailAddress();
+            customer.Validate();
+            var existCust = Repository.GetCustomer(customer.EmailAddress);
+            if (existCust != null)
+                throw new DuplicateCustomerEmailAddress(customer.EmailAddress);
         }
     }
 }
