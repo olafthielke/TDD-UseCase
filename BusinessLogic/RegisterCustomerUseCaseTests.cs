@@ -72,5 +72,17 @@ namespace BusinessLogic
             useCase.Register(customer);
             mockCustomerRepo.Verify(x => x.GetCustomer(emailAddress));
         }
+
+        [Fact]
+        public void Given_Customer_Already_Exists_When_Call_Register_Then_Throw_DuplicateCustomerEmailAddress_Exception()
+        {
+            var customer = new Customer("Fred", "Flintstone", "fred@flintstones.net");
+            var mockCustomerRepo = new Mock<ICustomerRepository>();
+            mockCustomerRepo.Setup(x => x.GetCustomer(It.IsAny<string>()))
+                .Returns(customer);
+            var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
+            Action register = () => useCase.Register(customer);
+            register.Should().ThrowExactly<DuplicateCustomerEmailAddress>();
+        }
     }
 }
