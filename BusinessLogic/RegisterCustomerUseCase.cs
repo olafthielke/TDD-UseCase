@@ -20,7 +20,10 @@ namespace BusinessLogic
                 throw new MissingFirstName();
             if (string.IsNullOrWhiteSpace(customer.LastName))
                 throw new MissingLastName();
-            throw new MissingEmailAddress();
+            if (string.IsNullOrWhiteSpace(customer.EmailAddress))
+                throw new MissingEmailAddress();
+
+            Repository.GetCustomer();
         }
     }
 }
