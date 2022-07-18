@@ -62,6 +62,7 @@ namespace BusinessLogic
         [Theory]
         [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
         [InlineData("Barney", "Rubble", "barney@rubbles.rock")]
+        [InlineData("Wilma", "Flintstone", "wilma@flintstones.net")]
         public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress(string firstName,
             string lastName, string emailAddress)
         {
