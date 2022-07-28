@@ -16,7 +16,7 @@ namespace BusinessLogic
         {
             Validate(customer);
 
-            Repository.SaveCustomer();
+            Repository.SaveCustomer(new Customer("", "", ""));
         }
 
         private void Validate(Customer customer)

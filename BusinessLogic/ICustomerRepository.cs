@@ -4,6 +4,6 @@
     {
         Customer GetCustomer(string emailAddress);
 
-        void SaveCustomer();
+        void SaveCustomer(Customer customer);
     }
 }
