@@ -99,7 +99,7 @@ namespace BusinessLogic
                 .Returns((Customer)null);
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
             useCase.Register(customer);
-            mockCustomerRepo.Verify(x => x.SaveCustomer());
+            mockCustomerRepo.Verify(x => x.SaveCustomer(customer));
         }
     }
 }
