@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Xunit;
 using Moq;
 using FluentAssertions;
@@ -9,11 +10,11 @@ namespace BusinessLogic
     public class RegisterCustomerUseCaseTests
     {
         [Fact]
-        public void Given_No_CustomerRegistration_When_Call_Register_Then_Throw_MissingCustomerRegistration_Exception()
+        public async Task Given_No_CustomerRegistration_When_Call_Register_Then_Throw_MissingCustomerRegistration_Exception()
         {
             var useCase = new RegisterCustomerUseCase(null);
-            Action register = () => useCase.Register(null);
-            register.Should().ThrowExactly<MissingCustomerRegistration>()
+            Func<Task> register = async () => await useCase.Register(null);
+            await register.Should().ThrowExactlyAsync<MissingCustomerRegistration>()
                              .WithMessage("Missing customer registration.");
         }
 
@@ -23,11 +24,11 @@ namespace BusinessLogic
         [InlineData(" ")]
         [InlineData("  ")]
         [InlineData("  \t\n ")]
-        public void Given_No_FirstName_When_Call_Register_Then_Throw_MissingFirstName_Exception(string firstName)
+        public async Task Given_No_FirstName_When_Call_Register_Then_Throw_MissingFirstName_Exception(string firstName)
         {
             var useCase = new RegisterCustomerUseCase(null);
-            Action register = () => useCase.Register(new CustomerRegistration(firstName, "Flintstone", "fred@flintstones.net"));
-            register.Should().ThrowExactly<MissingFirstName>()
+            Func<Task> register = async () => await useCase.Register(new CustomerRegistration(firstName, "Flintstone", "fred@flintstones.net"));
+            await register.Should().ThrowExactlyAsync<MissingFirstName>()
                 .WithMessage("Missing first name.");
         }
 
@@ -37,11 +38,11 @@ namespace BusinessLogic
         [InlineData(" ")]
         [InlineData("   ")]
         [InlineData(" \r\n  ")]
-        public void Given_No_LastName_When_Call_Register_Then_Throw_MissingLastName_Exception(string lastName)
+        public async Task Given_No_LastName_When_Call_Register_Then_Throw_MissingLastName_Exception(string lastName)
         {
             var useCase = new RegisterCustomerUseCase(null);
-            Action register = () => useCase.Register(new CustomerRegistration("Fred", lastName, "fred@flintstones.net"));
-            register.Should().ThrowExactly<MissingLastName>()
+            Func<Task> register = async () => await useCase.Register(new CustomerRegistration("Fred", lastName, "fred@flintstones.net"));
+            await register.Should().ThrowExactlyAsync<MissingLastName>()
                 .WithMessage("Missing last name.");
         }
 
@@ -51,11 +52,11 @@ namespace BusinessLogic
         [InlineData(" ")]
         [InlineData("   ")]
         [InlineData(" \r\n  ")]
-        public void Given_No_EmailAddress_When_Call_Register_Then_Throw_MissingEmailAddress_Exception(string emailAddress)
+        public async Task Given_No_EmailAddress_When_Call_Register_Then_Throw_MissingEmailAddress_Exception(string emailAddress)
         {
             var useCase = new RegisterCustomerUseCase(null);
-            Action register = () => useCase.Register(new CustomerRegistration("Fred", "Flintstone", emailAddress));
-            register.Should().ThrowExactly<MissingEmailAddress>()
+            Func<Task> register = async () => await useCase.Register(new CustomerRegistration("Fred", "Flintstone", emailAddress));
+            await register.Should().ThrowExactlyAsync<MissingEmailAddress>()
                 .WithMessage("Missing email address.");
         }
 
@@ -63,13 +64,13 @@ namespace BusinessLogic
         [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
         [InlineData("Barney", "Rubble", "barney@rubbles.rock")]
         [InlineData("Wilma", "Flintstone", "wilma@flintstones.net")]
-        public void When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress(string firstName,
+        public async Task When_Call_Register_Then_Try_Lookup_Customer_By_EmailAddress(string firstName,
             string lastName, string emailAddress)
         {
             var mockCustomerRepo = new Mock<ICustomerRepository>();
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
             var registration = new CustomerRegistration(firstName, lastName, emailAddress);
-            useCase.Register(registration);
+            await useCase.Register(registration);
             mockCustomerRepo.Verify(x => x.GetCustomer(emailAddress));
         }
 
@@ -77,17 +78,17 @@ namespace BusinessLogic
         [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
         [InlineData("Barney", "Rubble", "barney@rubbles.rock")]
         [InlineData("Wilma", "Flintstone", "wilma@flintstones.net")]
-        public void Given_Customer_Already_Exists_When_Call_Register_Then_Throw_DuplicateCustomerEmailAddress_Exception(string firstName,
+        public async Task Given_Customer_Already_Exists_When_Call_Register_Then_Throw_DuplicateCustomerEmailAddress_Exception(string firstName,
             string lastName, string emailAddress)
         {
             var customer = new Customer(Guid.NewGuid(), firstName, lastName, emailAddress);
             var mockCustomerRepo = new Mock<ICustomerRepository>();
             mockCustomerRepo.Setup(x => x.GetCustomer(It.IsAny<string>()))
-                .Returns(customer);
+                .ReturnsAsync(customer);
             var registration = new CustomerRegistration(firstName, lastName, emailAddress);
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
-            Action register = () => useCase.Register(registration);
-            register.Should().ThrowExactly<DuplicateCustomerEmailAddress>()
+            Func<Task> register = async () => await useCase.Register(registration);
+            await register.Should().ThrowExactlyAsync<DuplicateCustomerEmailAddress>()
                 .WithMessage($"Customer with email address '{emailAddress}' already exists.");
         }
 
@@ -95,14 +96,14 @@ namespace BusinessLogic
         [InlineData("Fred", "Flintstone", "fred@flintstones.net")]
         [InlineData("Barney", "Rubble", "barney@rubbles.rock")]
         [InlineData("Wilma", "Flintstone", "wilma@flintstones.net")]
-        public void Given_New_Customer_When_Call_Register_Then_Save_Customer_To_Repository(string firstName,
+        public async Task Given_New_Customer_When_Call_Register_Then_Save_Customer_To_Repository(string firstName,
             string lastName, string emailAddress)
         {
             var mockCustomerRepo = new Mock<ICustomerRepository>();
-            mockCustomerRepo.Setup(x => x.GetCustomer(It.IsAny<string>())).Returns((Customer)null);
+            mockCustomerRepo.Setup(x => x.GetCustomer(It.IsAny<string>())).ReturnsAsync((Customer)null);
             var registration = new CustomerRegistration(firstName, lastName, emailAddress);
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
-            var customer = useCase.Register(registration);
+            var customer = await useCase.Register(registration);
             mockCustomerRepo.Verify(x => x.SaveCustomer(customer));
         }
     }
