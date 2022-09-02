@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+using BusinessLogic.Entities;
 
-namespace BusinessLogic
+namespace BusinessLogic.Interfaces
 {
     public interface ICustomerRepository
     {

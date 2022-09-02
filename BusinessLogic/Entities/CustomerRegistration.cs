@@ -1,7 +1,7 @@
-﻿using BusinessLogic.Exceptions;
-using System;
+﻿using System;
+using BusinessLogic.Exceptions;
 
-namespace BusinessLogic
+namespace BusinessLogic.Entities
 {
     public class CustomerRegistration
     {

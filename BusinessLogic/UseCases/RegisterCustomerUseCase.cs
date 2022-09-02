@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
+using BusinessLogic.Entities;
 using BusinessLogic.Exceptions;
+using BusinessLogic.Interfaces;
 
-namespace BusinessLogic
+namespace BusinessLogic.UseCases
 {
     public class RegisterCustomerUseCase
     {
@@ -16,7 +18,7 @@ namespace BusinessLogic
         public async Task<Customer> Register(CustomerRegistration registration)
         {
             await Validate(registration);
-            var customer =  registration.ToCustomer();
+            var customer = registration.ToCustomer();
             await Repository.SaveCustomer(customer);
             return customer;
         }

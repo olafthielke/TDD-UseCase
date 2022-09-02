@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using Xunit;
 using Moq;
 using FluentAssertions;
+using BusinessLogic.Entities;
 using BusinessLogic.Exceptions;
+using BusinessLogic.Interfaces;
 
-namespace BusinessLogic
+namespace BusinessLogic.UseCases
 {
     public class RegisterCustomerUseCaseTests
     {

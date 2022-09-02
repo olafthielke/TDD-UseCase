@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BusinessLogic
+namespace BusinessLogic.Entities
 {
     public class Customer
     {
