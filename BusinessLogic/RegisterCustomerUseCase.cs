@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using BusinessLogic.Exceptions;
 
 namespace BusinessLogic
@@ -13,20 +13,20 @@ namespace BusinessLogic
         }
 
 
-        public Customer Register(CustomerRegistration registration)
+        public async Task<Customer> Register(CustomerRegistration registration)
         {
-            Validate(registration);
+            await Validate(registration);
             var customer =  registration.ToCustomer();
-            Repository.SaveCustomer(customer);
+            await Repository.SaveCustomer(customer);
             return customer;
         }
 
-        private void Validate(CustomerRegistration registration)
+        private async Task Validate(CustomerRegistration registration)
         {
             if (registration == null)
                 throw new MissingCustomerRegistration();
             registration.Validate();
-            var existCust = Repository.GetCustomer(registration.EmailAddress);
+            var existCust = await Repository.GetCustomer(registration.EmailAddress);
             if (existCust != null)
                 throw new DuplicateCustomerEmailAddress(registration.EmailAddress);
         }

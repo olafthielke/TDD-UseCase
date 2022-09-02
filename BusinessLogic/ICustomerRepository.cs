@@ -1,9 +1,11 @@
-﻿namespace BusinessLogic
+﻿using System.Threading.Tasks;
+
+namespace BusinessLogic
 {
     public interface ICustomerRepository
     {
-        Customer GetCustomer(string emailAddress);
+        Task<Customer> GetCustomer(string emailAddress);
 
-        void SaveCustomer(Customer customer);
+        Task SaveCustomer(Customer customer);
     }
 }
