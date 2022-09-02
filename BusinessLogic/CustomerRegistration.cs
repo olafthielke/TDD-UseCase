@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.Exceptions;
+using System;
 
 namespace BusinessLogic
 {
@@ -23,6 +24,11 @@ namespace BusinessLogic
                 throw new MissingLastName();
             if (string.IsNullOrWhiteSpace(EmailAddress))
                 throw new MissingEmailAddress();
+        }
+
+        public Customer ToCustomer()
+        {
+            return new Customer(Guid.NewGuid(), FirstName, LastName, EmailAddress);
         }
     }
 }
