@@ -1,5 +1,5 @@
-﻿using BusinessLogic.Exceptions;
-using System;
+﻿using System;
+using BusinessLogic.Exceptions;
 
 namespace BusinessLogic
 {
@@ -13,23 +13,23 @@ namespace BusinessLogic
         }
 
 
-        public void Register(Customer customer)
+        public void Register(CustomerRegistration registration)
         {
-            Validate(customer);
+            Validate(registration);
 
-            customer.Id = Guid.NewGuid();
+            var customer = new Customer(Guid.NewGuid(), registration.FirstName, registration.LastName, registration.EmailAddress);
 
             Repository.SaveCustomer(customer);
         }
 
-        private void Validate(Customer customer)
+        private void Validate(CustomerRegistration registration)
         {
-            if (customer == null)
-                throw new MissingCustomer();
-            customer.Validate();
-            var existCust = Repository.GetCustomer(customer.EmailAddress);
+            if (registration == null)
+                throw new MissingCustomerRegistration();
+            registration.Validate();
+            var existCust = Repository.GetCustomer(registration.EmailAddress);
             if (existCust != null)
-                throw new DuplicateCustomerEmailAddress(customer.EmailAddress);
+                throw new DuplicateCustomerEmailAddress(registration.EmailAddress);
         }
     }
 }

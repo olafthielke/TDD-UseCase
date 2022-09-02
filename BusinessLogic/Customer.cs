@@ -1,30 +1,20 @@
-﻿using BusinessLogic.Exceptions;
-using System;
+﻿using System;
 
 namespace BusinessLogic
 {
     public class Customer
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; }
         public string FirstName { get; }
         public string LastName { get; }
         public string EmailAddress { get; }
 
-        public Customer(string firstName, string lastName, string emailAddress)
+        public Customer(Guid id, string firstName, string lastName, string emailAddress)
         {
+            Id = id;
             FirstName = firstName;
             LastName = lastName;
             EmailAddress = emailAddress;
-        }
-
-        public void Validate()
-        {
-            if (string.IsNullOrWhiteSpace(FirstName))
-                throw new MissingFirstName();
-            if (string.IsNullOrWhiteSpace(LastName))
-                throw new MissingLastName();
-            if (string.IsNullOrWhiteSpace(EmailAddress))
-                throw new MissingEmailAddress();
         }
     }
 }

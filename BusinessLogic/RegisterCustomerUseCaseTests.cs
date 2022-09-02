@@ -1,20 +1,20 @@
 ﻿using System;
 using Xunit;
+using Moq;
 using FluentAssertions;
 using BusinessLogic.Exceptions;
-using Moq;
 
 namespace BusinessLogic
 {
     public class RegisterCustomerUseCaseTests
     {
         [Fact]
-        public void Given_No_Customer_When_Call_Register_Then_Throw_MissingCustomer_Exception()
+        public void Given_No_CustomerRegistration_When_Call_Register_Then_Throw_MissingCustomerRegistration_Exception()
         {
             var useCase = new RegisterCustomerUseCase(null);
             Action register = () => useCase.Register(null);
-            register.Should().ThrowExactly<MissingCustomer>()
-                             .WithMessage("Missing customer.");
+            register.Should().ThrowExactly<MissingCustomerRegistration>()
+                             .WithMessage("Missing customer registration.");
         }
 
         [Theory]
@@ -26,7 +26,7 @@ namespace BusinessLogic
         public void Given_No_FirstName_When_Call_Register_Then_Throw_MissingFirstName_Exception(string firstName)
         {
             var useCase = new RegisterCustomerUseCase(null);
-            Action register = () => useCase.Register(new Customer(firstName, "Flintstone", "fred@flintstones.net"));
+            Action register = () => useCase.Register(new CustomerRegistration(firstName, "Flintstone", "fred@flintstones.net"));
             register.Should().ThrowExactly<MissingFirstName>()
                 .WithMessage("Missing first name.");
         }
@@ -40,7 +40,7 @@ namespace BusinessLogic
         public void Given_No_LastName_When_Call_Register_Then_Throw_MissingLastName_Exception(string lastName)
         {
             var useCase = new RegisterCustomerUseCase(null);
-            Action register = () => useCase.Register(new Customer("Fred", lastName, "fred@flintstones.net"));
+            Action register = () => useCase.Register(new CustomerRegistration("Fred", lastName, "fred@flintstones.net"));
             register.Should().ThrowExactly<MissingLastName>()
                 .WithMessage("Missing last name.");
         }
@@ -54,7 +54,7 @@ namespace BusinessLogic
         public void Given_No_EmailAddress_When_Call_Register_Then_Throw_MissingEmailAddress_Exception(string emailAddress)
         {
             var useCase = new RegisterCustomerUseCase(null);
-            Action register = () => useCase.Register(new Customer("Fred", "Flintstone", emailAddress));
+            Action register = () => useCase.Register(new CustomerRegistration("Fred", "Flintstone", emailAddress));
             register.Should().ThrowExactly<MissingEmailAddress>()
                 .WithMessage("Missing email address.");
         }
@@ -68,8 +68,8 @@ namespace BusinessLogic
         {
             var mockCustomerRepo = new Mock<ICustomerRepository>();
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
-            var customer = new Customer(firstName, lastName, emailAddress);
-            useCase.Register(customer);
+            var registration = new CustomerRegistration(firstName, lastName, emailAddress);
+            useCase.Register(registration);
             mockCustomerRepo.Verify(x => x.GetCustomer(emailAddress));
         }
 
@@ -80,12 +80,13 @@ namespace BusinessLogic
         public void Given_Customer_Already_Exists_When_Call_Register_Then_Throw_DuplicateCustomerEmailAddress_Exception(string firstName,
             string lastName, string emailAddress)
         {
-            var customer = new Customer(firstName, lastName, emailAddress);
+            var customer = new Customer(Guid.NewGuid(), firstName, lastName, emailAddress);
             var mockCustomerRepo = new Mock<ICustomerRepository>();
             mockCustomerRepo.Setup(x => x.GetCustomer(It.IsAny<string>()))
                 .Returns(customer);
+            var registration = new CustomerRegistration(firstName, lastName, emailAddress);
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
-            Action register = () => useCase.Register(customer);
+            Action register = () => useCase.Register(registration);
             register.Should().ThrowExactly<DuplicateCustomerEmailAddress>()
                 .WithMessage($"Customer with email address '{emailAddress}' already exists.");
         }
@@ -97,13 +98,11 @@ namespace BusinessLogic
         public void Given_New_Customer_When_Call_Register_Then_Save_Customer_To_Repository(string firstName,
             string lastName, string emailAddress)
         {
-            var customer = new Customer(firstName, lastName, emailAddress);
             var mockCustomerRepo = new Mock<ICustomerRepository>();
             mockCustomerRepo.Setup(x => x.GetCustomer(It.IsAny<string>())).Returns((Customer)null);
-            mockCustomerRepo.Setup(x => x.SaveCustomer(It.IsAny<Customer>()))
-                .Callback<Customer>(c => c.Id.Should().NotBeEmpty());
+            var registration = new CustomerRegistration(firstName, lastName, emailAddress);
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
-            useCase.Register(customer);
+            var customer = useCase.Register(registration);
             mockCustomerRepo.Verify(x => x.SaveCustomer(customer));
         }
     }
