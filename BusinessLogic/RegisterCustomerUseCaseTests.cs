@@ -99,8 +99,9 @@ namespace BusinessLogic
         {
             var customer = new Customer(firstName, lastName, emailAddress);
             var mockCustomerRepo = new Mock<ICustomerRepository>();
-            mockCustomerRepo.Setup(x => x.GetCustomer(It.IsAny<string>()))
-                .Returns((Customer)null);
+            mockCustomerRepo.Setup(x => x.GetCustomer(It.IsAny<string>())).Returns((Customer)null);
+            mockCustomerRepo.Setup(x => x.SaveCustomer(It.IsAny<Customer>()))
+                .Callback<Customer>(c => c.Id.Should().NotBeEmpty());
             var useCase = new RegisterCustomerUseCase(mockCustomerRepo.Object);
             useCase.Register(customer);
             mockCustomerRepo.Verify(x => x.SaveCustomer(customer));
