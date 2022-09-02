@@ -1,9 +1,11 @@
 ﻿using BusinessLogic.Exceptions;
+using System;
 
 namespace BusinessLogic
 {
     public class Customer
     {
+        public Guid Id { get; set; }
         public string FirstName { get; }
         public string LastName { get; }
         public string EmailAddress { get; }
