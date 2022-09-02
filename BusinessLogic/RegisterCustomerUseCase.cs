@@ -13,13 +13,15 @@ namespace BusinessLogic
         }
 
 
-        public void Register(CustomerRegistration registration)
+        public Customer Register(CustomerRegistration registration)
         {
             Validate(registration);
 
             var customer = new Customer(Guid.NewGuid(), registration.FirstName, registration.LastName, registration.EmailAddress);
 
             Repository.SaveCustomer(customer);
+
+            return customer;
         }
 
         private void Validate(CustomerRegistration registration)
